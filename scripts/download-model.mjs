@@ -1,0 +1,12 @@
+import { mkdir, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+const revision = 'c8b211833491b1032250462c2b7e53e02f4de336';
+const base = `https://huggingface.co/chriamue/bird-species-classifier/resolve/${revision}/`;
+await mkdir('public/models', { recursive: true });
+const response = await fetch(base + 'onnx/model.onnx');
+if (!response.ok) throw new Error(`Model download failed: ${response.status}`);
+const bytes = Buffer.from(await response.arrayBuffer());
+const hash = createHash('sha256').update(bytes).digest('hex');
+if (hash !== '09b950b371030de9003824baa66457f2e8fc4f96fe87a34cc4c3b242b2864d8b') throw new Error('Model integrity check failed');
+await writeFile('public/models/birds.onnx', bytes);
+console.log(`Verified EfficientNet-B2 model: ${(bytes.length / 1024 / 1024).toFixed(1)} MiB, ${hash}`);

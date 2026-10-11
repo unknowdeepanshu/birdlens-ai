@@ -1,0 +1,10 @@
+node_modules/
+dist/
+*.tsbuildinfo
+public/models/*.onnx
+test-results/
+playwright-report/
+demo/*.webm
+!demo/birdlens-demo.webm
+.env*
+!.env.example
